@@ -16,10 +16,14 @@ class Account:
     def deposit(self, amount):
         if self.is_positive_amount(amount):
             self.balance += amount
+            return True
+        return False
 
     def withdraw(self, amount):
         if self.balance >= amount and self.is_positive_amount(amount):
             self.balance -= amount
+            return True
+        return False
 
 
 class Bank:
@@ -33,21 +37,20 @@ class Bank:
     def deposit(self, account_number, amount):
         if account_number in self.account:
             self.account[account_number].deposit(amount)
+        return False
 
     def withdraw(self, account_number, amount):
         if account_number in self.account:
             self.account[account_number].withdraw(amount)
+        return False
 
     def transfer(self, from_account_number, to_account_number, amount):
-        if (
-            from_account_number in self.account
-            and to_account_number in self.account
-            and self.account[from_account_number].balance >= amount
-            and amount > 0
-        ):
-            self.account[from_account_number].withdraw(amount)
-            self.account[to_account_number].deposit(amount)
-            return f"Transfer success {to_account_number} get {amount} to account"
+        if from_account_number in self.account and to_account_number in self.account:
+            from_acc = self.account[from_account_number]
+            to_acc = self.account[to_account_number]
+            if from_acc.withdraw(amount):
+                to_acc.deposit(amount)
+                return f"Transfer success {to_account_number} get {amount} to account"
         return False
 
 
