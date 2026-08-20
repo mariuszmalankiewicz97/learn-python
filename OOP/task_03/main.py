@@ -10,6 +10,17 @@ class Account:
     def __repr__(self):
         return f"Account(account_number='{self.account_number}', name='{self.name}', balance={self.balance})"
 
+    def is_positive_amount(self, amount):
+        return amount > 0
+
+    def deposit(self, amount):
+        if self.is_positive_amount(amount):
+            self.balance += amount
+
+    def withdraw(self, amount):
+        if self.balance >= amount and self.is_positive_amount(amount):
+            self.balance -= amount
+
 
 class Bank:
     def __init__(self):
@@ -19,46 +30,24 @@ class Bank:
         self.account[account.account_number] = account
         return f"Account create success"
 
-    def deposit(self, account_number, money):
-        if account_number in self.account and money > 0:
-            self.account[account_number].balance = (
-                self.account[account_number].balance + money
-            )
-            self.account[account_number].balance
-            return f"Deposit success,\nAccount balance: {self.account[account_number].balance}"
-        return False
-
-    def withdraw(self, account_number, money):
-        if (
-            account_number in self.account
-            and money > 0
-            and money <= self.account[account_number].balance
-        ):
-            self.account[account_number].balance = (
-                self.account[account_number].balance - money
-            )
-            return f"Withdraw success,\nAccount balance: {self.account[account_number].balance}"
-        return False
-
-    def balance(self, account_number):
+    def deposit(self, account_number, amount):
         if account_number in self.account:
-            return self.account[account_number].balance
-        return False
+            self.account[account_number].deposit(amount)
 
-    def transfer(self, from_account_number, to_account_number, money):
+    def withdraw(self, account_number, amount):
+        if account_number in self.account:
+            self.account[account_number].withdraw(amount)
+
+    def transfer(self, from_account_number, to_account_number, amount):
         if (
             from_account_number in self.account
             and to_account_number in self.account
-            and self.account[from_account_number].balance >= money
-            and money > 0
+            and self.account[from_account_number].balance >= amount
+            and amount > 0
         ):
-            self.account[from_account_number].balance = (
-                self.account[from_account_number].balance - money
-            )
-            self.account[to_account_number].balance = (
-                self.account[to_account_number].balance + money
-            )
-            return f"Transfer success {to_account_number} get {money} to account"
+            self.account[from_account_number].withdraw(amount)
+            self.account[to_account_number].deposit(amount)
+            return f"Transfer success {to_account_number} get {amount} to account"
         return False
 
 
@@ -71,7 +60,7 @@ bank.create_account(jan)
 bank.create_account(anna)
 bank.deposit("11222222223333333333333333", 500)
 bank.withdraw("11222222223333333333333333", 200)
-bank.balance("11222222223333333333333333")
 bank.transfer("11222222223333333333333333", "11222222223333333333333334", 300)
+
 
 print(bank.account)
