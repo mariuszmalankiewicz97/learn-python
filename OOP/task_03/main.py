@@ -3,6 +3,7 @@ class Account:
         self.account_number = account_number
         self.name = name
         self.balance = balance
+        self.history = []
 
     def __str__(self):
         return f"\nAccount number: {self.account_number} \nName: {self.name}, \nBalance: {self.balance}"
@@ -16,14 +17,19 @@ class Account:
     def deposit(self, amount):
         if self.is_positive_amount(amount):
             self.balance += amount
+            self.history.append(f"deposit: +{amount}")
             return True
         return False
 
     def withdraw(self, amount):
         if self.balance >= amount and self.is_positive_amount(amount):
             self.balance -= amount
+            self.history.append(f"Withdraw: -{amount}")
             return True
         return False
+
+    def get_history(self):
+        return self.history
 
 
 class Bank:
@@ -36,12 +42,12 @@ class Bank:
 
     def deposit(self, account_number, amount):
         if account_number in self.account:
-            self.account[account_number].deposit(amount)
+            return self.account[account_number].deposit(amount)
         return False
 
     def withdraw(self, account_number, amount):
         if account_number in self.account:
-            self.account[account_number].withdraw(amount)
+            return self.account[account_number].withdraw(amount)
         return False
 
     def transfer(self, from_account_number, to_account_number, amount):
