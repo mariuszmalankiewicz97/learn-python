@@ -1,11 +1,16 @@
 import json
 
-car = {"brand": "fiat", "year": 2010, "car_mileage": 123123}
+cars = [
+    {"brand": "fiat", "year": 2010},
+    {"brand": "bmw", "year": 2018},
+    {"brand": "audi", "year": 2021},
+]
 
-with open("car.json", "w") as f:
-    json.dump(car, f, indent=4)
+with open("garage.json", "w") as f:
+    json.dump(cars, f, indent=4)
 
 
-with open("car.json", "r") as f:
-    data = json.load(f)
-    print(data["brand"], data["car_mileage"], type(data))
+with open("garage.json", "r") as f:
+    garage_data = json.load(f)
+    for car in garage_data:
+        print(car["brand"])
